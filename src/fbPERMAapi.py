@@ -137,7 +137,7 @@ def main():
      
     max_number = options.max_number
     if max_number == None:
-        max_number = float("inf")
+        max_number = 1000000000 
     
     since = '2012-01-01' 
     until = None 
