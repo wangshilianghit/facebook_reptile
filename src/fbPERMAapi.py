@@ -139,8 +139,8 @@ def main():
     if max_number == None:
         max_number = float("inf")
     
-    since = None
-    until = None
+    since = '2012-01-01' 
+    until = None 
 
     lastResults = 1
     totalResults = 0
