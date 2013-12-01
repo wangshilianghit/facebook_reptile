@@ -20,6 +20,7 @@ print 'access toekn: ' + str(access_token)
 urlQuery = 'https://graph.facebook.com/search?type=post'
 
 MAX_ERRORS = 10   # how many times to retry something before existing
+MAX_TRIES = 5
 ERROR_PAUSE = 5   # how manay seconds to pause after an error
 
 def readJSONUrl(url):
@@ -36,7 +37,7 @@ def readJSONUrl(url):
             if (count < MAX_ERRORS): 
                 print "      ERROR: " + str(sys.exc_info()[0]) + ", " + str(e) + ", " + str(count) + " try, trying again in " + str(ERROR_PAUSE) + " seconds"
                 print e.message
-                time.sleep(ERROR_PAUSE**count)
+                time.sleep(ERROR_PAUSE)
             else:
                 print "URL ERROR: too many tries, exiting"
                 sys.exit(1);
@@ -145,9 +146,8 @@ def main():
     lastResults = 1
     totalResults = 0
 
-    while totalResults < max_number and lastResults > 0:
-
-        for keyword in keywords:
+    for keyword in keywords:
+        while totalResults < max_number:
 
             addParms = '&q=' + keyword
             if (since): addParms += '&since=' + str(since)
@@ -177,6 +177,19 @@ def main():
                 earLiestTime = stripPlusTime(earLiestTime)
                 print 'earliest time: ' + str(earLiestTime)
                 until = decreaseTime(earLiestTime)
+                count = 0
+
+            else:
+
+                count += 1
+                if (count < MAX_TRIES): 
+                    print "      ERROR: " + str(sys.exc_info()[0]) + ", " + str(e) + ", " + str(count) + " try, trying again in " + str(ERROR_PAUSE) + " seconds"
+                    print e.message
+                    time.sleep(ERROR_PAUSE)
+                else:
+                    print "Get Results Error: too many tries, exiting"
+                    sys.exit(1);
+
 
 
 if __name__ == "__main__":
