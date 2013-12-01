@@ -20,7 +20,7 @@ print 'access toekn: ' + str(access_token)
 urlQuery = 'https://graph.facebook.com/search?type=post'
 
 MAX_ERRORS = 10   # how many times to retry something before existing
-MAX_TRIES = 5
+MAX_TRIES = 10
 ERROR_PAUSE = 5   # how manay seconds to pause after an error
 
 def readJSONUrl(url):
@@ -170,7 +170,7 @@ def main():
             totalResults += lastResults
             print 'got results: ' + str(lastResults) + "   Total: " + str(totalResults)
 
-            if lastResults:
+            if lastResults > 0:
 
                 earLiestTime = results[-1]['created_time']
                 print 'earliest time: ' + str(earLiestTime)
