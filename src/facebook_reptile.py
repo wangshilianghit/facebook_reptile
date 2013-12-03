@@ -12,10 +12,6 @@ from argparse import ArgumentParser
 """
     This is the info from the bogus app I used
 """
-app_id = '653943651304297'
-app_secret = '1bc923adced1393d7565dca05a0ea24e'
-access_token = urlopen("https://graph.facebook.com/oauth/access_token?client_id="+app_id+"&client_secret="+app_secret+"&grant_type=client_credentials").read()
-print 'access toekn: ' + str(access_token)
 
 urlQuery = 'https://graph.facebook.com/search?type=post'
 
@@ -122,7 +118,8 @@ def main():
 
     parser = ArgumentParser(description='Store the facebook data based on the keywords from the file.')
     parser.add_argument("-f", "--keyword_file", type=str, help="Input the keyword file after -f")
-    parser.add_argument("-o", "--output", type=str, help="Input the output path after -f")
+    parser.add_argument("-o", "--output", type=str, help="Input the output path after -o")
+    parser.add_argument("-p", "--pid_file", type=str, help="Input the pid file after -p")
     parser.add_argument("-n", "--max_number", type=int, help="The maximum number of post to return after -n")
 
     options = parser.parse_args()
@@ -135,10 +132,34 @@ def main():
 
     output = options.output
     file_name = getFileName(output)
+
+    pid_file = options.pid_file
+
+    #Create pid file
+    if pid_file != None:
+        pid = str(os.getpid())
+        file(pid_file, 'w').write(pid)
      
     max_number = options.max_number
     if max_number == None:
         max_number = 1000000000 
+
+    #Get app id and app secret from file 
+    app_filename = 'fb_app.txt'
+    try:
+        app_file = open(app_filename, 'r')
+    except IOError: 
+        sys.stderr.write('Error: unable to open file %s\n' % app_filename)
+        infile.close()
+        sys.exit(-1)
+    
+    # We store multiple app id and app secreate in these file, but we just use the last one right now.
+    for app_line in app_file.readlines():
+        app = app_line.strip().split(' ')
+        app_id = app[0]
+        app_secret = app[1]
+     
+    access_token = urlopen("https://graph.facebook.com/oauth/access_token?client_id="+app_id+"&client_secret="+app_secret+"&grant_type=client_credentials").read()
     
     since = '2012-01-01' 
     until = None 
