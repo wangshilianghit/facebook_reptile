@@ -150,7 +150,6 @@ def main():
         app_file = open(app_filename, 'r')
     except IOError: 
         sys.stderr.write('Error: unable to open file %s\n' % app_filename)
-        infile.close()
         sys.exit(-1)
     
     # We store multiple app id and app secreate in these file, but we just use the last one right now.
